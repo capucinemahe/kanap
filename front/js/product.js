@@ -1,17 +1,18 @@
-const getAll = async function () { //je déclare la fonction GetAll - asynchrone = je prépare mon asynchrone 
+const getOne = async function () { //je déclare la fonction GetOne - asynchrone = je prépare mon asynchrone 
+
     try { //si ma fonction marche
-        let response = await fetch(`http://localhost:3000/api/products/`); //j'attends la reponse du fetch pour passer à la suite
+
+    //je récupère l'id du produit à afficher
+    const str = window.location.href; //je cherche l'url en mode dynamique
+    const url = new URL(str); //je découpe l'url pour voir tous les paramètres qu'il y a dedans
+    const id = url.searchParams.get("id"); //je cherche la valeur du paramètre de id
+    console.log("id");
+
+        let response = await fetch(`http://localhost:3000/api/products/${id}`); //j'attends la reponse du fetch pour passer à la suite
         if (response.ok) { //si ma réponse est OK, je passe à la suite
             const data = await response.json(); //pour récupérer mes produits sous forme de tableau - array
 
-
             console.log(data);//on accède aux données
-
-            const str = window.location.href; //je cherche l'url en mode dynamique
-            const url = new URL(str); //je découpe l'url pour voir tous les paarmètres qu'il y a dedans
-            const id = url.searchParams.get("id"); //je cherche la valeur du paramètre de id
-            console.log(id);
-
 
             data.forEach(elt => { //boucle pour parcourir chaque element
 
@@ -34,4 +35,4 @@ const getAll = async function () { //je déclare la fonction GetAll - asynchrone
     }
 };
 
-getAll(); //j'appelle la fonction globale, la fonction getAll
+getOne(); //j'appelle la fonction getOne, pour un produit
