@@ -43,5 +43,4 @@ const getAll = async function () { //asynchrone = je prépare mon asynchrone
         console.log(err); //ma console va renvoyer une erreur
     }
 }
-
 getAll(); //appelle la fonction globale 
