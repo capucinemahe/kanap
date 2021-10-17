@@ -26,12 +26,12 @@ const getAll = async function () { //asynchrone = je prépare mon asynchrone
 
                 const h3 = document.createElement('h3');
                 h3.innerHTML = elt.name;
-                h3.class = "productName";
+                h3.className = "productName";
                 article.appendChild(h3); //je l'injecte dans le DOM via son parent article
 
                 const p = document.createElement('p');
                 p.innerHTML = elt.description;
-                p.class = "productDescription";
+                p.className = "productDescription";
                 article.appendChild(p); //je l'injecte dans le DOM via son parent article
             })
         }

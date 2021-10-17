@@ -34,52 +34,40 @@ const getOne = async function () { //je déclare la fonction GetOne - asynchrone
             //je vais chercher mon parent pour créer mes options de couleurs
             data_product.colors.forEach(elt => { //je vais parcourir mon tableau de couleurs dans mes datas product
 
-            const optionsDeCouleur = document.createElement('option');
-            //je déclare ma variable optionsDeCouleur et je créé et je stocke la balise option dans cette variable
-            optionsDeCouleur.value = elt;
-            //je stocke les données du tableau colors dans l'attribut value de la balise option
-            parentColors.appendChild(optionsDeCouleur);
-            //j'injecte ma variable optionsDeCouleur qui contient les données dans le dom grace au parent
-            optionsDeCouleur.innerHTML = elt; //je fais afficher les données sur mon site
+                const optionsDeCouleur = document.createElement('option');
+                //je déclare ma variable optionsDeCouleur et je créé et je stocke la balise option dans cette variable
+                optionsDeCouleur.value = elt;
+                //je stocke les données du tableau colors dans l'attribut value de la balise option
+                parentColors.appendChild(optionsDeCouleur);
+                //j'injecte ma variable optionsDeCouleur qui contient les données dans le dom grace au parent
+                optionsDeCouleur.innerHTML = elt; //je fais afficher les données sur mon site
             });
 
+            const quantiteeVoulue = document.getElementById("quantity");
+            const couleurVoulue = document.getElementById("colors");
 
             //mon panier est un array = tableau = les tableaux sont des objets
 
-             //j'essaie de récupérer la valeur de l'input quantité
-            function getQuantity(){
-                const inputValue = document.getElementById("quantity").value;
-            };
-    
-            
-
-            //il faut que je crée une fonction qui sera appelée à chaque fois que je cliquerai sur le bouton AddToCart
-
-            //ici mon evènement de click sur le btn
+            //ici mon evènement de click sur le btn et de stockage dans mon storage
             const btnAddToCart = document.getElementById("addToCart");
-            btnAddToCart.addEventListener('click', () =>{
-                ajoutLocalstorage()
-            });
 
-            function ajoutLocalstorage() {
-
-                const getColor = document.getElementById("colors");
-
-                let objAddToCart = {
-                    colors: getColor.value,
+            btnAddToCart.addEventListener('click', () => {
+                let obj = {
                     id: data_product._id,
-                    quantity: getQuantity(), 
+                    colors: couleurVoulue.value,
+                    quantity: quantiteeVoulue.value,
+                }; //mon objet que je dois retrouver dans mon storage
+
+                let panier = []; //tableau vide pour stocker mes produits
+               if (localStorage.getItem("panier")) { //je teste si j'ai déja quelque chose dans mon localstorage
+                    panier = JSON.parse(localStorage.getItem("panier")); //si j'ai des données dedans, ce sera assigné à mon tableau panier
                 };
 
+                //j'insére mon objet dans le tableau panier
+                panier.push(obj);
 
-            }
-        
-            localStorage.setItem(data_product.id, JSON.stringify(objAddToCart));
-            localStorage.setItem(data_product.colors, JSON.stringify(objAddToCart));
-
-
-            //je dois faire le calcul du prix total en fonction de la quantité ajoutée 
-
+                localStorage.setItem("panier", JSON.stringify(panier));
+            });
         }
         else {
             console.error("retour du serveur:", response.status);
