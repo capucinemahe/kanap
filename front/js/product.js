@@ -30,18 +30,15 @@ const getOne = async function () { //je déclare la fonction GetOne - asynchrone
             const description = document.getElementById('description');
             description.innerHTML = data_product.description;
 
-            const parentColors = document.getElementById('colors');
-            //je vais chercher mon parent pour créer mes options de couleurs
-            data_product.colors.forEach(elt => { //je vais parcourir mon tableau de couleurs dans mes datas product
+            const parentColors = document.getElementById('colors'); //je vais chercher mon parent pour créer mes options de couleurs
+            
+               data_product.colors.forEach(elt => { //je vais parcourir mon tableau de couleurs dans mes datas product
 
-                const optionsDeCouleur = document.createElement('option');
-                //je déclare ma variable optionsDeCouleur et je créé et je stocke la balise option dans cette variable
-                optionsDeCouleur.value = elt;
-                //je stocke les données du tableau colors dans l'attribut value de la balise option
-                parentColors.appendChild(optionsDeCouleur);
-                //j'injecte ma variable optionsDeCouleur qui contient les données dans le dom grace au parent
+                const optionsDeCouleur = document.createElement('option'); //je déclare ma variable optionsDeCouleur et je créé et je stocke la balise option dans cette variable
+                optionsDeCouleur.value = elt; //je stocke les données du tableau colors dans l'attribut value de la balise option
+                parentColors.appendChild(optionsDeCouleur); //j'injecte ma variable optionsDeCouleur qui contient les données dans le dom grace au parent
                 optionsDeCouleur.innerHTML = elt; //je fais afficher les données sur mon site
-            });
+               });
 
             const quantiteeVoulue = document.getElementById("quantity");
             const couleurVoulue = document.getElementById("colors");
@@ -54,18 +51,19 @@ const getOne = async function () { //je déclare la fonction GetOne - asynchrone
             btnAddToCart.addEventListener('click', () => {
                 let obj = {
                     id: data_product._id,
+                    name: data_product.name,
+                    image : data_product.imageUrl,
                     colors: couleurVoulue.value,
                     quantity: quantiteeVoulue.value,
-                }; //mon objet que je dois retrouver dans mon storage
-
+                    price: data_product.price,
+                }; //mon objet et ses infos que je dois retrouver dans mon storage
+                
                 let panier = []; //tableau vide pour stocker mes produits
-               if (localStorage.getItem("panier")) { //je teste si j'ai déja quelque chose dans mon localstorage
+                if (localStorage.getItem("panier")) { //je teste si j'ai déja quelque chose dans mon localstorage
                     panier = JSON.parse(localStorage.getItem("panier")); //si j'ai des données dedans, ce sera assigné à mon tableau panier
                 };
-
                 //j'insére mon objet dans le tableau panier
                 panier.push(obj);
-
                 localStorage.setItem("panier", JSON.stringify(panier));
             });
         }
