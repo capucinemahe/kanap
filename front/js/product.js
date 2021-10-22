@@ -49,22 +49,42 @@ const getOne = async function () { //je déclare la fonction GetOne - asynchrone
             const btnAddToCart = document.getElementById("addToCart");
 
             btnAddToCart.addEventListener('click', () => {
-                let obj = {
+                let objet = {
                     id: data_product._id,
                     name: data_product.name,
                     image : data_product.imageUrl,
                     colors: couleurVoulue.value,
-                    quantity: quantiteeVoulue.value,
+                    quantity: parseInt(quantiteeVoulue.value),
                     price: data_product.price,
                 }; //mon objet et ses infos que je dois retrouver dans mon storage
                 
                 let panier = []; //tableau vide pour stocker mes produits
                 if (localStorage.getItem("panier")) { //je teste si j'ai déja quelque chose dans mon localstorage
                     panier = JSON.parse(localStorage.getItem("panier")); //si j'ai des données dedans, ce sera assigné à mon tableau panier
-                };
-                //j'insére mon objet dans le tableau panier
-                panier.push(obj);
-                localStorage.setItem("panier", JSON.stringify(panier));
+                    
+                    let newPanier = [...panier]; //je crée une copie de mon panier
+                    
+                    //je cherche si le produit que j'ajoute est déja présent dans le panier
+                    let objIndex = newPanier.findIndex((item=> item.id === objet.id)); 
+                    console.log(objIndex);
+
+                    if(objIndex !== -1) { //si mon produiut est déja là, j'actualise la quantité
+                        newPanier[objIndex].quantity += objet.quantity;
+                      }
+                      else if (objIndex === -1) { //sinon je l'ajoute normalement au panier
+                          newPanier.push(objet);
+                        }
+                        localStorage.setItem("panier", JSON.stringify(newPanier));
+
+                    } else {
+
+                        //j'insére mon objet dans le tableau panier
+                        panier.push(objet);
+                        localStorage.setItem("panier", JSON.stringify(panier));
+
+                    }
+
+        
             });
         }
         else {

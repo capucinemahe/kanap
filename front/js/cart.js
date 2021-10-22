@@ -1,11 +1,11 @@
 let panier = []; //tableau vide pour stocker mes produits
+let prixTotal = 0; //j'initialise ma variable du prix total de mon panier
+let quantiteTotale = 0;
+
 
 localStorage.getItem("panier"); //je teste si j'ai déja quelque chose dans mon localstorage
 panier = JSON.parse(localStorage.getItem("panier")); //si j'ai des données dedans, ce sera assigné à mon tableau panier
 
-let prixTotalPourChaqueRef = [];
-let quantiteTotalePourChaqueRef = [];
-const somme = (previousValue, currentValue) => previousValue + currentValue;
 
 panier.forEach(eltpanier => { //je parcours tous les élements présents dans mon panier
 
@@ -15,6 +15,7 @@ panier.forEach(eltpanier => { //je parcours tous les élements présents dans mo
     parentCart.appendChild(articleCart);
     articleCart.className = "cart__item";
     articleCart.setAttribute("data-id", eltpanier._id);
+
 
     const divCartImage = document.createElement('div');
     articleCart.appendChild(divCartImage);
@@ -43,7 +44,8 @@ panier.forEach(eltpanier => { //je parcours tous les élements présents dans mo
 
     const productPrice = document.createElement('p');
     divCartContentTitlePrice.appendChild(productPrice);
-    productPrice.innerHTML = eltpanier.price *= eltpanier.quantity; //prix unitaire du canapé * quantité présente dans le panier
+    let totalPrixRef = eltpanier.price *= eltpanier.quantity; //prix de ma ligne de produit
+    productPrice.innerHTML = totalPrixRef;
 
     const divCartContentSettings = document.createElement('div');
     divCartContent.appendChild(divCartContentSettings);
@@ -65,8 +67,8 @@ panier.forEach(eltpanier => { //je parcours tous les élements présents dans mo
     inputQuantity.min = 1;
     inputQuantity.max = 100;
     inputQuantity.value = eltpanier.quantity;
-
-    //inputQuantity.addEventListener('change', modifyQuantity() => {};
+ 
+    let quantiteTotaleRef= parseInt(eltpanier.quantity);
 
     const divProductDelete = document.createElement('div');
     divCartContentSettings.appendChild(divProductDelete);
@@ -77,27 +79,26 @@ panier.forEach(eltpanier => { //je parcours tous les élements présents dans mo
     deleteItem.className = "deleteItem";
     deleteItem.innerHTML = "Supprimer";
 
+    const totalQuantity = document.getElementById('totalQuantity');
+    quantiteTotale += quantiteTotaleRef;
+    totalQuantity.innerHTML = quantiteTotale;
 
-    /*let clearLign = document.querySelector('.deleteItem'); // sélectionne le bouton
+    const totalPrice = document.getElementById('totalPrice');
+    prixTotal += totalPrixRef; 
+    totalPrice.innerHTML = prixTotal;
+
+
+});
+   
+
+    //inputQuantity.addEventListener('change', modifyQuantity() => {};
+
+ 
+ /*let clearLign = document.querySelector('.deleteItem'); // sélectionne le bouton
     clearLign.addEventListener ('click', (e) => { // écoute du clic
         
         location.reload(); // recharge la page
     });*/
-
-    const totalQuantity = document.getElementById('totalQuantity');
-    //totalQuantity.innerHTML = eltpanier.quantity.reduce(somme);
-    
-    
-    prixTotalPourChaqueRef.push(eltpanier.price *= eltpanier.quantity);
-    
-    const totalPrice = document.getElementById('totalPrice');
-    totalPrice.innerHTML = prixTotalPourChaqueRef.reduce(somme);
-});
-   
-
-    
-
- 
 
 
 
