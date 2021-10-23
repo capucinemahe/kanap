@@ -31,14 +31,14 @@ const getOne = async function () { //je déclare la fonction GetOne - asynchrone
             description.innerHTML = data_product.description;
 
             const parentColors = document.getElementById('colors'); //je vais chercher mon parent pour créer mes options de couleurs
-            
-               data_product.colors.forEach(elt => { //je vais parcourir mon tableau de couleurs dans mes datas product
+
+            data_product.colors.forEach(elt => { //je vais parcourir mon tableau de couleurs dans mes datas product
 
                 const optionsDeCouleur = document.createElement('option'); //je déclare ma variable optionsDeCouleur et je créé et je stocke la balise option dans cette variable
                 optionsDeCouleur.value = elt; //je stocke les données du tableau colors dans l'attribut value de la balise option
                 parentColors.appendChild(optionsDeCouleur); //j'injecte ma variable optionsDeCouleur qui contient les données dans le dom grace au parent
                 optionsDeCouleur.innerHTML = elt; //je fais afficher les données sur mon site
-               });
+            });
 
             const quantiteeVoulue = document.getElementById("quantity");
             const couleurVoulue = document.getElementById("colors");
@@ -52,46 +52,40 @@ const getOne = async function () { //je déclare la fonction GetOne - asynchrone
                 let objet = {
                     id: data_product._id,
                     name: data_product.name,
-                    image : data_product.imageUrl,
+                    image: data_product.imageUrl,
+                    textAlt: data_product.altTxt,
                     colors: couleurVoulue.value,
                     quantity: parseInt(quantiteeVoulue.value),
                     price: data_product.price,
                 }; //mon objet et ses infos que je dois retrouver dans mon storage
-                
+
+
                 let panier = []; //tableau vide pour stocker mes produits
                 if (localStorage.getItem("panier")) { //je teste si j'ai déja quelque chose dans mon localstorage
-                    panier = JSON.parse(localStorage.getItem("panier")); //si j'ai des données dedans, ce sera assigné à mon tableau panier
-                    
+                    panier = JSON.parse(localStorage.getItem("panier"));
+                    //si j'ai des données dedans, ce sera assigné à mon tableau panier
+
                     let newPanier = [...panier]; //je crée une copie de mon panier
-                    
-                    //je cherche si le produit que j'ajoute est déja présent dans le panier
-                    let objIndex = newPanier.findIndex((item=> item.id === objet.id)); 
-                    console.log(objIndex);
 
-                    if(objIndex !== -1) { //si mon produiut est déja là, j'actualise la quantité
+                    let objIndex = newPanier.findIndex((item => item.id === objet.id && objet.colors === item.colors));
+
+                    if (objIndex !== -1) { //si mon produit est déja là, j'actualise la quantité
                         newPanier[objIndex].quantity += objet.quantity;
-                      }
-                      else if (objIndex === -1) { //sinon je l'ajoute normalement au panier
-                          newPanier.push(objet);
-                        }
-                        localStorage.setItem("panier", JSON.stringify(newPanier));
-
-                    } else {
-
-                        //j'insére mon objet dans le tableau panier
-                        panier.push(objet);
-                        localStorage.setItem("panier", JSON.stringify(panier));
-
                     }
-
-        
+                    else if (objIndex === -1) { //sinon je l'ajoute normalement au panier
+                        newPanier.push(objet);
+                    }
+                    localStorage.setItem("panier", JSON.stringify(newPanier));
+                } else {
+                    //j'insére mon objet dans le tableau panier
+                    panier.push(objet);
+                    localStorage.setItem("panier", JSON.stringify(panier));
+                }
             });
-        }
-        else {
+        } else {
             console.error("retour du serveur:", response.status);
         }
-    }
-    catch (err) { //si ma fonction ne marche pas
+    } catch (err) { //si ma fonction ne marche pas
         console.log(err); //ma console va renvoyer une erreur
     }
 };

@@ -1,21 +1,17 @@
-let panier = []; //tableau vide pour stocker mes produits
 let prixTotal = 0; //j'initialise ma variable du prix total de mon panier
 let quantiteTotale = 0;
 
-
 localStorage.getItem("panier"); //je teste si j'ai déja quelque chose dans mon localstorage
-panier = JSON.parse(localStorage.getItem("panier")); //si j'ai des données dedans, ce sera assigné à mon tableau panier
+let panier = JSON.parse(localStorage.getItem("panier")); //si j'ai des données dedans, ce sera assigné à mon tableau panier
 
+const parentCart = document.getElementById('cart__items');
 
 panier.forEach(eltpanier => { //je parcours tous les élements présents dans mon panier
 
-    const parentCart = document.getElementById('cart__items');
-
     const articleCart = document.createElement('article');
-    parentCart.appendChild(articleCart);
     articleCart.className = "cart__item";
-    articleCart.setAttribute("data-id", eltpanier._id);
-
+    articleCart.setAttribute("data-id", eltpanier.id);
+    parentCart.appendChild(articleCart);
 
     const divCartImage = document.createElement('div');
     articleCart.appendChild(divCartImage);
@@ -44,7 +40,7 @@ panier.forEach(eltpanier => { //je parcours tous les élements présents dans mo
 
     const productPrice = document.createElement('p');
     divCartContentTitlePrice.appendChild(productPrice);
-    let totalPrixRef = eltpanier.price *= eltpanier.quantity; //prix de ma ligne de produit
+    const totalPrixRef = eltpanier.price * eltpanier.quantity; //prix de ma ligne de produit
     productPrice.innerHTML = totalPrixRef;
 
     const divCartContentSettings = document.createElement('div');
@@ -67,8 +63,9 @@ panier.forEach(eltpanier => { //je parcours tous les élements présents dans mo
     inputQuantity.min = 1;
     inputQuantity.max = 100;
     inputQuantity.value = eltpanier.quantity;
- 
-    let quantiteTotaleRef= parseInt(eltpanier.quantity);
+
+    //pour modifier la quantité de mon canapé
+    //quantiteTotaleRef.addEventListener('change', modifyQuantity() => {};
 
     const divProductDelete = document.createElement('div');
     divCartContentSettings.appendChild(divProductDelete);
@@ -80,32 +77,46 @@ panier.forEach(eltpanier => { //je parcours tous les élements présents dans mo
     deleteItem.innerHTML = "Supprimer";
 
     const totalQuantity = document.getElementById('totalQuantity');
-    quantiteTotale += quantiteTotaleRef;
+    quantiteTotale += eltpanier.quantity;
     totalQuantity.innerHTML = quantiteTotale;
 
     const totalPrice = document.getElementById('totalPrice');
-    prixTotal += totalPrixRef; 
+    prixTotal += totalPrixRef;
     totalPrice.innerHTML = prixTotal;
 
+    deleteItem.addEventListener('click', () => {
+        const longueurDuPanierAvantSuppresssion = panier.length;
 
-});
-   
+        panier = [...panier.filter(item => item.id + item.colors !== eltpanier.id + eltpanier.colors)];
+        //je filtre dans mon panier en fonction de l'id ET de la couleur de mon produit
+        //j'enlève l'article si il est different en fonction de son ID et sa couleur 
 
-    //inputQuantity.addEventListener('change', modifyQuantity() => {};
-
- 
- /*let clearLign = document.querySelector('.deleteItem'); // sélectionne le bouton
-    clearLign.addEventListener ('click', (e) => { // écoute du clic
         
-        location.reload(); // recharge la page
-    });*/
-
+        if (panier.length < longueurDuPanierAvantSuppresssion) {//si mon nouveau panier a moins d'articles 
+            localStorage.setItem("panier", JSON.stringify(panier));
+            parentCart.removeChild(articleCart); //permet de faire la mise a jour sans rafraichir la page - single page
+            // récupérer les nouvelles quntités de mon nouveau tableau 
+            // récupérer les nouveaux prix de mon nouveau tableau
+            
+            if (panier.length == 0) { //si mon panier est vide, quantité totale et prix total sont égal à 0
+                totalQuantity.innerHTML = 0;
+                totalPrice.innerHTML = 0;
+            } else { //sinon le prix total et la quantité totale s'actualisent
+                totalQuantity.innerHTML = quantiteTotale -= eltpanier.quantity;
+                totalPrice.innerHTML = prixTotal -= totalPrixRef;
+            }
+        }
+    });
+});
 
 
 
 
 
 //formulaire
+
+
+
 
 /*const parentForm = document.querySelector('.cart__order__form');
 
