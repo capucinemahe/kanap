@@ -3,8 +3,8 @@ const getOne = async function () { //je déclare la fonction GetOne - asynchrone
     try { //si ma fonction marche
 
         //je récupère l'id du produit à afficher
-        const str = window.location.href; //je cherche l'url en mode dynamique
-        const url = new URL(str); //je découpe l'url pour voir tous les paramètres qu'il y a dedans
+         //je cherche l'url en mode dynamique
+        const url = new URL(window.location.href); //je découpe l'url pour voir tous les paramètres qu'il y a dedans
         const id = url.searchParams.get("id"); //je cherche la valeur du paramètre de id
 
         let response = await fetch(`http://localhost:3000/api/products/${id}`);
