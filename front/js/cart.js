@@ -39,6 +39,7 @@ if (panier) {
         productColor.innerHTML = eltpanier.colors;
 
         const productPrice = document.createElement('p');
+        productPrice.classList.add("prixUnitaire");
         divCartContentTitlePrice.appendChild(productPrice);
         const totalPrixRef = eltpanier.price * eltpanier.quantity; //prix de ma ligne de produit
         productPrice.innerHTML = totalPrixRef;
@@ -64,8 +65,14 @@ if (panier) {
         inputQuantity.max = 100;
         inputQuantity.value = eltpanier.quantity;
 
-        //pour modifier la quantité de mon canapé
-        //quantiteTotaleRef.addEventListener('change', modifyQuantity() => {};
+        //modifier la quantité directement au sein du panier + faire en sorte que les totaux finaux s'actualisent
+        inputQuantity.addEventListener('change', () => {
+            productPrice.innerHTML = inputQuantity.value * eltpanier.price;
+
+            sommePrixCanapes();
+            sommeQuantiteCanapes();
+        });
+
 
         const divProductDelete = document.createElement('div');
         divCartContentSettings.appendChild(divProductDelete);
@@ -84,13 +91,13 @@ if (panier) {
         prixTotal += totalPrixRef;
         totalPrice.innerHTML = prixTotal;
 
+
         deleteItem.addEventListener('click', () => {
             const longueurDuPanierAvantSuppresssion = panier.length;
 
             panier = [...panier.filter(item => item.id + item.colors !== eltpanier.id + eltpanier.colors)];
             //je filtre dans mon panier en fonction de l'id ET de la couleur de mon produit
             //j'enlève l'article si il est different en fonction de son ID et sa couleur 
-
 
             if (panier.length < longueurDuPanierAvantSuppresssion) {//si mon nouveau panier a moins d'articles 
                 localStorage.setItem("panier", JSON.stringify(panier));
@@ -114,6 +121,31 @@ if (panier) {
         window.location.href = "index.html";
     }
 };
+
+function sommeQuantiteCanapes() {
+    const quantiteCanap = document.querySelectorAll('.itemQuantity');
+    let somme = 0;
+
+    //console.log(totalQuantity);
+
+    quantiteCanap.forEach(canappp => {
+        somme += parseInt(canappp.value);
+    })
+    return totalQuantity.innerHTML = somme;
+};
+
+function sommePrixCanapes() {
+    const prixCanap = document.querySelectorAll('.prixUnitaire');
+    let somme = 0;
+
+    prixCanap.forEach(canappp => {
+        somme += parseInt(canappp.innerHTML);
+
+        //console.log(canappp.innerHTML);
+    })
+    return totalPrice.innerHTML = somme;
+};
+
 
 
 //********** formulaire ***********//
@@ -225,7 +257,5 @@ submitForm.addEventListener("click", (e) => {
 // je récupère la valeur puis je la push dans un tableau - faire tableau avec les ids des produits du panier du localstorage
 
 //le fetch est fait au moment du click sur le bouton pr envoyer les données
-
-
 
 //au moment d'envoyer les données au back, cleaner le localstorage
