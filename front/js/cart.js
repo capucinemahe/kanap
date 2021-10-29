@@ -1,17 +1,20 @@
-let prixTotal = 0; //j'initialise ma variable du prix total de mon panier
+let prixTotal = 0; //j'initialise la variable du prix total de mon panier
 let quantiteTotale = 0;
-let panier = JSON.parse(localStorage.getItem("panier"));  //je teste si j'ai déja quelque chose dans mon localstorage
-//si j'ai des données dedans, ce sera assigné à mon tableau panier
+
+let panier = JSON.parse(localStorage.getItem("panier"));
+//j'assigne les données de mon localstorage à mon tableau panier
 
 const parentCart = document.getElementById('cart__items');
+//je déclare le parent de mon DOM pour créer des éléments dynamiquement
 
-if (panier) {
-    panier.forEach(eltpanier => { //je parcours tous les élements présents dans mon panier
+if (panier) { //si mon panier a une valeur
+    panier.forEach(eltpanier => {
+        //je parcours tous les élements présents dans mon panier pour que les données s'affichent
 
         const articleCart = document.createElement('article');
+        parentCart.appendChild(articleCart);
         articleCart.className = "cart__item";
         articleCart.setAttribute("data-id", eltpanier.id);
-        parentCart.appendChild(articleCart);
 
         const divCartImage = document.createElement('div');
         articleCart.appendChild(divCartImage);
@@ -38,11 +41,17 @@ if (panier) {
         divCartContentTitlePrice.appendChild(productColor);
         productColor.innerHTML = eltpanier.colors;
 
+        //***** PRIX ******/
         const productPrice = document.createElement('p');
-        productPrice.classList.add("prixUnitaire");
         divCartContentTitlePrice.appendChild(productPrice);
+        productPrice.classList.add("prixUnitaire");
+
         const totalPrixRef = eltpanier.price * eltpanier.quantity; //prix de ma ligne de produit
         productPrice.innerHTML = totalPrixRef;
+
+        const totalPrice = document.getElementById('totalPrice');
+        prixTotal += totalPrixRef;
+        totalPrice.innerHTML = prixTotal;
 
         const divCartContentSettings = document.createElement('div');
         divCartContent.appendChild(divCartContentSettings);
@@ -56,6 +65,7 @@ if (panier) {
         divProductQuantity.appendChild(inputQuantityTitle);
         inputQuantityTitle.innerHTML = "Quantité :";
 
+        //******** QUANTITE *****/
         const inputQuantity = document.createElement('input');
         divProductQuantity.appendChild(inputQuantity);
         inputQuantity.type = "number";
@@ -65,14 +75,18 @@ if (panier) {
         inputQuantity.max = 100;
         inputQuantity.value = eltpanier.quantity;
 
-        //modifier la quantité directement au sein du panier + faire en sorte que les totaux finaux s'actualisent
+        const totalQuantity = document.getElementById('totalQuantity');
+        quantiteTotale += eltpanier.quantity;
+        totalQuantity.innerHTML = quantiteTotale;
+
+        //pour modifier la quantité directement au sein du panier
+        //+ faire en sorte que les totaux finaux s'actualisent avec l'appel aux fonctions de sommes
         inputQuantity.addEventListener('change', () => {
             productPrice.innerHTML = inputQuantity.value * eltpanier.price;
 
             sommePrixCanapes();
             sommeQuantiteCanapes();
         });
-
 
         const divProductDelete = document.createElement('div');
         divCartContentSettings.appendChild(divProductDelete);
@@ -83,40 +97,32 @@ if (panier) {
         deleteItem.className = "deleteItem";
         deleteItem.innerHTML = "Supprimer";
 
-        const totalQuantity = document.getElementById('totalQuantity');
-        quantiteTotale += eltpanier.quantity;
-        totalQuantity.innerHTML = quantiteTotale;
-
-        const totalPrice = document.getElementById('totalPrice');
-        prixTotal += totalPrixRef;
-        totalPrice.innerHTML = prixTotal;
-
-
+        //pour supprimer totalement la reférence du panier 
         deleteItem.addEventListener('click', () => {
             const longueurDuPanierAvantSuppresssion = panier.length;
-
+            
             panier = [...panier.filter(item => item.id + item.colors !== eltpanier.id + eltpanier.colors)];
             //je filtre dans mon panier en fonction de l'id ET de la couleur de mon produit
             //j'enlève l'article si il est different en fonction de son ID et sa couleur 
-
+            
             if (panier.length < longueurDuPanierAvantSuppresssion) {//si mon nouveau panier a moins d'articles 
                 localStorage.setItem("panier", JSON.stringify(panier));
                 parentCart.removeChild(articleCart); //permet de faire la mise a jour sans rafraichir la page - single page
-                // récupérer les nouvelles quntités de mon nouveau tableau 
+                // récupérer les nouvelles quantités de mon nouveau tableau 
                 // récupérer les nouveaux prix de mon nouveau tableau
-
-                if (panier.length == 0) { //si mon panier est vide, quantité totale et prix total sont égal à 0
+                
+                if (panier.length == 0) { //si mon panier est vide, quantité totale et prix total seront égal à 0
                     totalQuantity.innerHTML = 0;
                     totalPrice.innerHTML = 0;
                 } else { //sinon le prix total et la quantité totale s'actualisent
                     totalQuantity.innerHTML = quantiteTotale -= eltpanier.quantity;
                     totalPrice.innerHTML = prixTotal -= totalPrixRef;
-                }
-            }
+                }}
         });
     });
 } else {
     result = window.confirm("panier vide, voulez-vous retourner sur la page d'accueil ?")
+    //afiche un fenetre qui propose de retourner sur la page de présentation des produits
     if (result == true) {
         window.location.href = "index.html";
     }
@@ -125,8 +131,6 @@ if (panier) {
 function sommeQuantiteCanapes() {
     const quantiteCanap = document.querySelectorAll('.itemQuantity');
     let somme = 0;
-
-    //console.log(totalQuantity);
 
     quantiteCanap.forEach(canappp => {
         somme += parseInt(canappp.value);
@@ -140,12 +144,9 @@ function sommePrixCanapes() {
 
     prixCanap.forEach(canappp => {
         somme += parseInt(canappp.innerHTML);
-
-        //console.log(canappp.innerHTML);
     })
     return totalPrice.innerHTML = somme;
 };
-
 
 
 //********** formulaire ***********//
@@ -182,7 +183,7 @@ inputCity.addEventListener("input", () => {
 
 inputName.addEventListener("input", () => {
 
-    if (regexNames.test(inputName.value) == false) {
+    if (regexNames.test(inputName.value) == false) { //si les donnees saisies dans mon input sont incorrectes, un msg d'erreur apparait
         document.getElementById('lastNameErrorMsg').innerHTML = "format de votre nom incorrect";
     }
 });
@@ -213,7 +214,7 @@ submitForm.addEventListener("click", (e) => {
         return false;
     };
 
-    const products = []; //produits à envoyer en post
+    const products = []; //produits à envoyer en post sous forme de tableau
 
     panier.forEach(elt => {
         products.push(elt.id);
@@ -231,14 +232,11 @@ submitForm.addEventListener("click", (e) => {
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify(donnees),
     })
-
-
-        .then(response => { //renvoi un premiere prommesse
-            return response.json() //si response ok, retourne un objet json
+        .then(response => { //renvoi une premiere prommesse
+            return response.json() //si reponse ok, retourne un objet json
         })
         //traitement pour l'obtention du numéro de commmande
         .then((panier) => {
-
             window.location.href = `confirmation.html?orderId=${panier.orderId}`; //redirige vers la page confirmation de commande
         })
 
@@ -256,6 +254,4 @@ submitForm.addEventListener("click", (e) => {
 
 // je récupère la valeur puis je la push dans un tableau - faire tableau avec les ids des produits du panier du localstorage
 
-//le fetch est fait au moment du click sur le bouton pr envoyer les données
-
-//au moment d'envoyer les données au back, cleaner le localstorage
+//le fetch est fait au moment du click sur le bouton pr envoyer les données au back
