@@ -120,20 +120,21 @@ if (panier) { //si mon panier a une valeur
                 }}
         });
     });
-} else {
+} else { //si mon panier est vide 
     result = window.confirm("panier vide, voulez-vous retourner sur la page d'accueil ?")
     //afiche un fenetre qui propose de retourner sur la page de présentation des produits
-    if (result == true) {
+    if (result == true) { //si l'utilisateur est ok, renvoi sur la page index.html
         window.location.href = "index.html";
     }
 };
 
+//déclaration des fonctions qui font les sommes totales du panier
 function sommeQuantiteCanapes() {
     const quantiteCanap = document.querySelectorAll('.itemQuantity');
     let somme = 0;
 
-    quantiteCanap.forEach(canappp => {
-        somme += parseInt(canappp.value);
+    quantiteCanap.forEach(qte => {
+        somme += parseInt(qte.value);
     })
     return totalQuantity.innerHTML = somme;
 };
@@ -142,8 +143,8 @@ function sommePrixCanapes() {
     const prixCanap = document.querySelectorAll('.prixUnitaire');
     let somme = 0;
 
-    prixCanap.forEach(canappp => {
-        somme += parseInt(canappp.innerHTML);
+    prixCanap.forEach(price => {
+        somme += parseInt(price.innerHTML);
     })
     return totalPrice.innerHTML = somme;
 };
@@ -155,61 +156,71 @@ const parentForm = document.querySelector('.cart__order');
 const submitForm = document.getElementById('order');
 
 const inputFirstName = document.getElementById('firstName');
-const inputName = document.getElementById('lastName');
-const inputAdress = document.getElementById('address');
+const inputLastName = document.getElementById('lastName');
+const inputAddress = document.getElementById('address');
 const inputCity = document.getElementById('city');
 const inputEmail = document.getElementById('email');
 
-const regexMail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/;
-const regexCity = /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/;
 const regexNames = /^[a-z ,.'-]+$/i;
+const regexAddress = /^[a-zA-Z0-9\s,'-]*$/;
+const regexCity = /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/;
+const regexMail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/;
 
 //chaque fois que l'utilisateur tente d'envoyer les données
 //on vérifie que le champ est valide
 
-inputEmail.addEventListener("input", () => {
-    //si il est invalide, on affiche un message d'erreur personnalisé
-    if (regexMail.test(inputEmail.value) == false) {
-        document.getElementById('emailErrorMsg').innerHTML = "l'email saisi n'est pas correct";
-    }
-}); //ça empêche l'envoi des données du formulaire au back
-
-inputCity.addEventListener("input", () => {
-
-    if (regexCity.test(inputCity.value) == false) {
-        document.getElementById('cityErrorMsg').innerHTML = "format de ville incorrect";
-    }
-});
-
-inputName.addEventListener("input", () => {
-
-    if (regexNames.test(inputName.value) == false) { //si les donnees saisies dans mon input sont incorrectes, un msg d'erreur apparait
-        document.getElementById('lastNameErrorMsg').innerHTML = "format de votre nom incorrect";
-    }
-});
-
 inputFirstName.addEventListener("input", () => {
-
+ //si il est invalide, on affiche un message d'erreur personnalisé
     if (regexNames.test(inputFirstName.value) == false) {
         document.getElementById('firstNameErrorMsg').innerHTML = "format de votre prénom incorrect";
-    }
+    } else {document.getElementById('firstNameErrorMsg').innerHTML = "" } //sinon le msg d'erreur s'enlève
+});//ça empêche l'envoi des données du formulaire au back
+
+inputLastName.addEventListener("input", () => {
+    if (regexNames.test(inputLastName.value) == false) { //si les donnees saisies dans mon input sont incorrectes, un msg d'erreur apparait
+        document.getElementById('lastNameErrorMsg').innerHTML = "format de votre nom incorrect";
+    } else {document.getElementById('lastNameErrorMsg').innerHTML = "" }
 });
 
+inputAddress.addEventListener("input", () => {
+    if (regexAddress.test(inputAddress.value) == false) {
+        document.getElementById('addressErrorMsg').innerHTML = "format d'adresse incorrect";
+    } else {document.getElementById('addressErrorMsg').innerHTML = "" }
+});
+
+inputCity.addEventListener("input", () => {
+    if (regexCity.test(inputCity.value) == false) {
+        document.getElementById('cityErrorMsg').innerHTML = "format de ville incorrect";
+    } else {document.getElementById('cityErrorMsg').innerHTML = "" }
+});
+
+inputEmail.addEventListener("input", () => {
+    if (regexMail.test(inputEmail.value) == false) {
+        document.getElementById('emailErrorMsg').innerHTML = "l'email saisi n'est pas correct";
+    } else {document.getElementById('emailErrorMsg').innerHTML = "" }
+});
+
+//evenement lors du click pour l'envoi du formulaire
 submitForm.addEventListener("click", (e) => {
     e.preventDefault() //empeche
-
+    
     const contact = { //objet contact à partir des données du formulaire
         firstName: inputFirstName.value,
-        lastName: inputName.value,
-        address: inputAdress.value,
+        lastName: inputLastName.value,
+        address: inputAddress.value,
         city: inputCity.value,
         email: inputEmail.value,
     };
-
-    //console.log(contact);
-
+    
+    //test si un champ est vide, ne pas générer de commande
+    if (inputFirstName.value == "" || inputLastName.value == "" ||
+    inputAddress.value == "" || inputCity.value == "" || inputEmail.value == "") {
+        alert("Champ(s) manquant(s)");
+        return false;
+    };
+    
     //test des Regex
-    if (regexMail.test(contact.email) == false || regexCity.test(contact.city) == false || regexNames.test(contact.firstName || regexNames.test(contact.lastName) == false) == false) {
+    if (regexAddress.test(contact.address) == false || regexMail.test(contact.email) == false || regexCity.test(contact.city) == false || regexNames.test(contact.firstName || regexNames.test(contact.lastName ) == false) == false) {
         alert("Merci de remplir correctement le formulaire pour valider votre commande");
         return false;
     };
@@ -223,8 +234,6 @@ submitForm.addEventListener("click", (e) => {
     //console.log(products);
 
     const donnees = { contact, products }; //objet avec les données contact + le tableau des produits
-
-    //console.log(donnees);
 
     //on envoie en POST
     fetch((`http://localhost:3000/api/products/order`), {

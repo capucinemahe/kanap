@@ -4,11 +4,11 @@ const url = new URL(window.location.href);
 //console.log(url);
 
 const orderId = url.searchParams.get("orderId"); 
-//je récupère l'orderiD
+//je récupère orderiD
 
 //console.log(orderId);
 
 const confirmationId = document.getElementById('orderId');
 confirmationId.innerHTML = orderId;
 
-localStorage.clear();
+//localStorage.clear();
