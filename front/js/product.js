@@ -58,11 +58,11 @@ function constructDOM(data_product) {
 const quantiteeVoulue = document.getElementById("quantity");
 const couleurVoulue = document.getElementById("colors");
 
-//ici mon evènement de click sur le btn et de stockage dans mon storage
 const btnAddToCart = document.getElementById("addToCart");
+//ici mon evènement de click sur le btn et de stockage dans mon storage
 
-btnAddToCart.addEventListener('click', () => {
-
+btnAddToCart.addEventListener("click", (data_product) => {
+    
     if (parentColors.value == "") {
         alert("Choisir une couleur pour votre canapé");
         return false;
@@ -100,6 +100,7 @@ btnAddToCart.addEventListener('click', () => {
         }
         localStorage.setItem("panier", JSON.stringify(newPanier));
     } else {
+
         //sinon j'insére mon objet dans le tableau panier normalement
         panier.push(objet);
         //j'envoi mon panier et ses produits dans mon localStorage avec Setitem et
@@ -108,6 +109,7 @@ btnAddToCart.addEventListener('click', () => {
         //le premier argument de setItem est la clé (tjrs de type string)
         //elle précise l'endroit où sont stockées les données pour les retrouver ultérieurement
     }
+
 });
 
 getDataProduct();
