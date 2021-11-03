@@ -2,7 +2,8 @@ let prixTotal = 0; //j'initialise la variable du prix total de mon panier
 let quantiteTotale = 0;
 
 let panier = JSON.parse(localStorage.getItem("panier"));
-//j'assigne les données de mon localstorage à mon tableau panier
+//j'assigne les données de mon localstorage à mon tableau panier avec Getitem
+// je parse pour pouvoir exploiter le tableau et ses données
 
 const parentCart = document.getElementById('cart__items');
 //je déclare le parent de mon DOM pour créer des éléments dynamiquement
@@ -100,24 +101,25 @@ if (panier) { //si mon panier a une valeur
         //pour supprimer totalement la reférence du panier 
         deleteItem.addEventListener('click', () => {
             const longueurDuPanierAvantSuppresssion = panier.length;
-            
+
             panier = [...panier.filter(item => item.id + item.colors !== eltpanier.id + eltpanier.colors)];
             //je filtre dans mon panier en fonction de l'id ET de la couleur de mon produit
             //j'enlève l'article si il est different en fonction de son ID et sa couleur 
-            
+
             if (panier.length < longueurDuPanierAvantSuppresssion) {//si mon nouveau panier a moins d'articles 
                 localStorage.setItem("panier", JSON.stringify(panier));
                 parentCart.removeChild(articleCart); //permet de faire la mise a jour sans rafraichir la page - single page
                 // récupérer les nouvelles quantités de mon nouveau tableau 
                 // récupérer les nouveaux prix de mon nouveau tableau
-                
+
                 if (panier.length == 0) { //si mon panier est vide, quantité totale et prix total seront égal à 0
                     totalQuantity.innerHTML = 0;
                     totalPrice.innerHTML = 0;
                 } else { //sinon le prix total et la quantité totale s'actualisent
                     totalQuantity.innerHTML = quantiteTotale -= eltpanier.quantity;
                     totalPrice.innerHTML = prixTotal -= totalPrixRef;
-                }}
+                }
+            }
         });
     });
 } else { //si mon panier est vide 
@@ -170,40 +172,40 @@ const regexMail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/;
 //on vérifie que le champ est valide
 
 inputFirstName.addEventListener("input", () => {
- //si il est invalide, on affiche un message d'erreur personnalisé
+    //si il est invalide, on affiche un message d'erreur personnalisé
     if (regexNames.test(inputFirstName.value) == false) {
         document.getElementById('firstNameErrorMsg').innerHTML = "format de votre prénom incorrect";
-    } else {document.getElementById('firstNameErrorMsg').innerHTML = "" } //sinon le msg d'erreur s'enlève
+    } else { document.getElementById('firstNameErrorMsg').innerHTML = "" } //sinon le msg d'erreur s'enlève
 });//ça empêche l'envoi des données du formulaire au back
 
 inputLastName.addEventListener("input", () => {
     if (regexNames.test(inputLastName.value) == false) { //si les donnees saisies dans mon input sont incorrectes, un msg d'erreur apparait
         document.getElementById('lastNameErrorMsg').innerHTML = "format de votre nom incorrect";
-    } else {document.getElementById('lastNameErrorMsg').innerHTML = "" }
+    } else { document.getElementById('lastNameErrorMsg').innerHTML = "" }
 });
 
 inputAddress.addEventListener("input", () => {
     if (regexAddress.test(inputAddress.value) == false) {
         document.getElementById('addressErrorMsg').innerHTML = "format d'adresse incorrect";
-    } else {document.getElementById('addressErrorMsg').innerHTML = "" }
+    } else { document.getElementById('addressErrorMsg').innerHTML = "" }
 });
 
 inputCity.addEventListener("input", () => {
     if (regexCity.test(inputCity.value) == false) {
         document.getElementById('cityErrorMsg').innerHTML = "format de ville incorrect";
-    } else {document.getElementById('cityErrorMsg').innerHTML = "" }
+    } else { document.getElementById('cityErrorMsg').innerHTML = "" }
 });
 
 inputEmail.addEventListener("input", () => {
     if (regexMail.test(inputEmail.value) == false) {
         document.getElementById('emailErrorMsg').innerHTML = "l'email saisi n'est pas correct";
-    } else {document.getElementById('emailErrorMsg').innerHTML = "" }
+    } else { document.getElementById('emailErrorMsg').innerHTML = "" }
 });
 
 //evenement lors du click pour l'envoi du formulaire
 submitForm.addEventListener("click", (e) => {
-    e.preventDefault() //empeche
-    
+    e.preventDefault() //empeche le refresh de la page quand on clique
+
     const contact = { //objet contact à partir des données du formulaire
         firstName: inputFirstName.value,
         lastName: inputLastName.value,
@@ -211,16 +213,16 @@ submitForm.addEventListener("click", (e) => {
         city: inputCity.value,
         email: inputEmail.value,
     };
-    
+
     //test si un champ est vide, ne pas générer de commande
     if (inputFirstName.value == "" || inputLastName.value == "" ||
-    inputAddress.value == "" || inputCity.value == "" || inputEmail.value == "") {
+        inputAddress.value == "" || inputCity.value == "" || inputEmail.value == "") {
         alert("Champ(s) manquant(s)");
         return false;
     };
-    
+
     //test des Regex
-    if (regexAddress.test(contact.address) == false || regexMail.test(contact.email) == false || regexCity.test(contact.city) == false || regexNames.test(contact.firstName || regexNames.test(contact.lastName ) == false) == false) {
+    if (regexAddress.test(contact.address) == false || regexMail.test(contact.email) == false || regexCity.test(contact.city) == false || regexNames.test(contact.firstName || regexNames.test(contact.lastName) == false) == false) {
         alert("Merci de remplir correctement le formulaire pour valider votre commande");
         return false;
     };
@@ -254,13 +256,4 @@ submitForm.addEventListener("click", (e) => {
         });
 });
 
-
-//verifier les inputs et une fois vérifiés, ils sont envoyé
-
-//La méthode GET est la valeur de méthode par défaut
-//On l'utilise de préférence sauf si on ne veut pas que les paramètres soient ajoutés à l'URL
-//Elle permet de récupérer les données passées à la page avec du code JavaScript
-
 // je récupère la valeur puis je la push dans un tableau - faire tableau avec les ids des produits du panier du localstorage
-
-//le fetch est fait au moment du click sur le bouton pr envoyer les données au back

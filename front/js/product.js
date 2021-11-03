@@ -1,16 +1,14 @@
+//2eme appel à l'API
 const getOne = async function () { //je déclare la fonction GetOne - je prépare mon asynchrone 
-
     try { //si ma fonction marche
-
-        //je récupère l'id du produit à afficher
-         //je cherche l'url en mode dynamique
+        //je veut récupèrer l'id du produit à afficher 
         const url = new URL(window.location.href);
-        //je découpe l'url pour voir tous les paramètres qu'il y a dedans
+        //je découpe l'url pour récupérer l'id du produit
         const id = url.searchParams.get("id");
-        //je cherche la valeur du paramètre de id
+        //je cherche la valeur du paramètre de id 
 
         let response = await fetch(`http://localhost:3000/api/products/${id}`);
-        //j'injecte l'id du canapé cliqué dans le fetch
+        //j'injecte l'id du canapé cliqué dans le fetch pour récupérer les données de ce produit
         if (response.ok) { //si ma réponse est OK, je passe à la suite
             const data_product = await response.json();
             //je récupère les données du produit cliqué sous forme de json
@@ -53,26 +51,26 @@ const getOne = async function () { //je déclare la fonction GetOne - je prépar
             const btnAddToCart = document.getElementById("addToCart");
 
             btnAddToCart.addEventListener('click', () => {
+                //je crée un objet pour stocker les données du produit
                 let objet = {
                     id: data_product._id,
                     name: data_product.name,
                     image: data_product.imageUrl,
                     textAlt: data_product.altTxt,
                     colors: couleurVoulue.value,
-                    quantity: parseInt(quantiteeVoulue.value), 
+                    quantity: parseInt(quantiteeVoulue.value),
                     //je parse ma quantité car sinon c'est un string
                     price: data_product.price,
-                }; //mon objet et ses infos que je dois retrouver dans mon storage
+                };
 
+                let panier = []; //je crée un tableau vide pour stocker mes produits
 
-                let panier = []; //tableau vide pour stocker mes produits
-                //mon panier est un array = les tableaux sont des objets
+                //je veux faire en sorte que si j'ai déja un produit de meme iD et meme couleur dans mon panier, ils se cumulent
                 if (localStorage.getItem("panier")) {
-                    //je teste si j'ai déja quelque chose dans mon localstorage
+                    //je teste si j'ai déja quelque chose dans mon panier
                     panier = JSON.parse(localStorage.getItem("panier"));
-                    //si j'ai des données dedans, ce sera assigné à mon tableau panier
+                    //si j'ai des données elles seront assignées à mon tableau panier
 
-                    //je veux faire en sorte que si j'ai déja un produit de meme iD et meme couleur dans mon storage, ils se cumulent
                     let newPanier = [...panier]; //je crée une copie de mon panier
 
                     let objIndex = newPanier.findIndex((item => item.id === objet.id && objet.colors === item.colors));
@@ -87,7 +85,11 @@ const getOne = async function () { //je déclare la fonction GetOne - je prépar
                 } else {
                     //sinon j'insére mon objet dans le tableau panier normalement
                     panier.push(objet);
+                    //j'envoi mon panier et ses produits dans mon localStorage avec Setitem et
+                    //je convertit le tableau en chaînes de caractères avec stringify
                     localStorage.setItem("panier", JSON.stringify(panier));
+                    //le premier argument de setItem est la clé (tjrs de type string)
+                    //elle précise l'endroit où sont stockées les données pour les retrouver ultérieurement
                 }
             });
         } else {

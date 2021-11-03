@@ -1,12 +1,11 @@
-// je fais ma requete à l'API, asynchrone pour attendre la réponse du back end
+// je fais ma requete à l'API de manière asynchrone pour que mon code ne bloque pas
 //une fois la réponse ok, je récupère la réponse de la requete
 
-
-const getAll = async function () { //asynchrone = je prépare mon asynchrone 
+const getAll = async function () { //je prépare mon asynchrone 
     try { //si ma fonction marche
         let response = await fetch("http://localhost:3000/api/products"); //j'attends la reponse du fetch
         if (response.ok) { //si la réponse est OK, je passe à la suite
-            const data = await response.json(); //je récupére mes produits sous forme de tableau - array
+            const data = await response.json(); //je récupére mes produits sous forme de tableau
 
             const parent = document.getElementById('items'); //je vais chercher mon parent pour construire les elements du DOM
 
@@ -14,10 +13,10 @@ const getAll = async function () { //asynchrone = je prépare mon asynchrone
 
                 const a = document.createElement('a');
                 parent.appendChild(a); //je l'injecte dans le DOM via son parent
-                a.href = `./product.html?id=${elt._id}`;
+                a.href = `./product.html?id=${elt._id}`; //me redirige vers le produit qui correspond à l'id
 
                 const article = document.createElement('article');
-                a.appendChild(article); 
+                a.appendChild(article);
 
                 const img = document.createElement('img');
                 article.appendChild(img); //je l'injecte dans le DOM via son parent article
@@ -42,4 +41,4 @@ const getAll = async function () { //asynchrone = je prépare mon asynchrone
         console.log(err); //ma console va renvoyer une erreur
     }
 }
-getAll(); //appelle la fonction globale pour récupérer les données de l'API
+getAll(); //j'appelle la fonction globale pour récupérer les données de l'API

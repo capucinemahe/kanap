@@ -11,4 +11,4 @@ const orderId = url.searchParams.get("orderId");
 const confirmationId = document.getElementById('orderId');
 confirmationId.innerHTML = orderId;
 
-//localStorage.clear();
+localStorage.clear();
