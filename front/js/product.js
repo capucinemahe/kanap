@@ -14,37 +14,34 @@ async function getDataProduct() { //je déclare la fonction - je prépare mon as
     }
 };
 
-//je veut récupèrer l'id du produit à afficher 
+//je veux récupèrer l'id du produit à afficher 
 const url = new URL(window.location.href);
 //je découpe l'url pour récupérer l'id du produit
 const id = url.searchParams.get("id");
 //je cherche la valeur du paramètre de id 
 
 const parentColors = document.getElementById('colors');
-//je vais chercher mon parent pour créer mes options de couleurs
-
 const parentImage = document.querySelector('.item__img');
-//je déclare le parent pour créer mon élement
+const nameKanap = document.getElementById('title');
+const priceKanap = document.getElementById('price');
+const descriptionKanap = document.getElementById('description');
+const imageKanap = document.createElement('img');
+const quantiteeVoulue = document.getElementById("quantity");
+const couleurVoulue = document.getElementById("colors");
 
 function constructDOM(data_product) {
-
-    const imageKanap = document.createElement('img');
+    
     parentImage.appendChild(imageKanap);
     imageKanap.src = data_product.imageUrl;
     imageKanap.alt = data_product.altTxt;
     
-    const name = document.getElementById('title');
-    name.innerHTML = data_product.name; //concerne le nom du canapé
+    nameKanap.innerHTML = data_product.name; //concerne le nom du canapé
     
-    const price = document.getElementById('price');
-    price.innerHTML = data_product.price; //idem pour le prix
+    priceKanap.innerHTML = data_product.price; //idem pour le prix
     
-    const description = document.getElementById('description');
-    description.innerHTML = data_product.description;
-    
+    descriptionKanap.innerHTML = data_product.description;
     
     data_product.colors.forEach(elt => { //je vais parcourir mon tableau de couleurs dans mes data_product
-    
         const optionsDeCouleur = document.createElement('option');
         //je déclare ma variable optionsDeCouleur et je créé et je stocke la balise option dans cette variable
         optionsDeCouleur.value = elt;
@@ -55,14 +52,11 @@ function constructDOM(data_product) {
     });
 };
 
-const quantiteeVoulue = document.getElementById("quantity");
-const couleurVoulue = document.getElementById("colors");
-
 const btnAddToCart = document.getElementById("addToCart");
 //ici mon evènement de click sur le btn et de stockage dans mon storage
 
-btnAddToCart.addEventListener("click", (data_product) => {
-    
+btnAddToCart.addEventListener("click", () => {
+
     if (parentColors.value == "") {
         alert("Choisir une couleur pour votre canapé");
         return false;
@@ -70,14 +64,14 @@ btnAddToCart.addEventListener("click", (data_product) => {
 
     //je crée un objet pour stocker les données du produit
     let objet = {
-        id: data_product._id,
-        name: data_product.name,
-        image: data_product.imageUrl,
-        textAlt: data_product.altTxt,
+        id: id,
+        name: nameKanap.innerHTML,
+        image: imageKanap.src,
+        textAlt: imageKanap.alt,
         colors: couleurVoulue.value,
         quantity: parseInt(quantiteeVoulue.value),
         //je parse ma quantité car sinon c'est un string
-        price: data_product.price,
+        price: priceKanap.innerHTML,
     };
 
     let panier = []; //je crée un tableau vide pour stocker mes produits
@@ -109,7 +103,6 @@ btnAddToCart.addEventListener("click", (data_product) => {
         //le premier argument de setItem est la clé (tjrs de type string)
         //elle précise l'endroit où sont stockées les données pour les retrouver ultérieurement
     }
-
 });
 
 getDataProduct();
