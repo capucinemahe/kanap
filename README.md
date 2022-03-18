@@ -1,6 +1,12 @@
 # Kanap #
 
-This is the front end and back end server for Project 5 of the Web Developer path.
+Projet numéro 5 de ma formation OC 
+
+backend déja fourni
+
+fronted : html fourni - faire les parties en JavaScript pour le front
+
+
 
 ### Back end Prerequisites ###
 
